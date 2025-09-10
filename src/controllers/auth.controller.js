@@ -101,10 +101,22 @@ async function loginUserController(req, res) {
     }
 }
 
-
+async function logoutUserController(req,res){
+   try {
+    res.clearCookie("token")
+    return res.status(200).json({
+      message:"User logged out succesfully"
+    })
+   } catch (error) {
+    console.error(error)
+    return res.status(500).json({
+       message:"Internal Server Error"
+    })
+   }
+}
 
 module.exports = {
   registerUserController,
   loginUserController,
- 
+  logoutUserController
 };
