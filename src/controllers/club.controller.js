@@ -1,5 +1,6 @@
-const { message } = require("prompt-async");
+
 const clubModel = require("../models/club.model");
+const memberShipModel = require("../models/membership.model");
 
 async function createClubController(req, res) {
   try {
@@ -22,6 +23,12 @@ async function createClubController(req, res) {
       privacy:privacy.toLowerCase(),
       tags: tagsArray,
     });
+     await memberShipModel.create({
+       userId:userId,
+       clubId:club._id,
+       role:"owner",
+       status:"active"
+    })
     return res.status(201).json({
       message: "New Club created Successfully !!",
       club,
