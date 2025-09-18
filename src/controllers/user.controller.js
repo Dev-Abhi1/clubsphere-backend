@@ -1,6 +1,8 @@
 const userModel = require("../models/user.model");
 const memberShipModel = require("../models/membership.model");
 const rsvpModel = require("../models/rsvp.model");
+const clubModel = require("../models/club.model")
+const eventModel = require("../models/event.model")
 const { message } = require("prompt-async");
 const bcrypt = require("bcryptjs");
 
@@ -23,10 +25,10 @@ async function getUserController(req, res) {
     return res.status(200).json({
       message: "User details fetched successfully",
       user: {
-        firstName,
-        lastName,
-        userName,
-        email,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        userName: user.userName,
+        email: user.email,
       },
       clubs: membership.map((m) => ({
         clubId: m.clubId._id,
@@ -86,6 +88,12 @@ async function updateUserController(req, res) {
     await user.save();
     return res.status(200).json({
       message: "User profile updated successfully",
+      user:{
+         firstName: user.firstName,
+        lastName: user.lastName,
+        userName: user.userName,
+        email: user.email,
+      }
     });
   } catch (error) {
     console.error(error);
@@ -134,13 +142,12 @@ async function findUserController(req, res) {
       .find({ userId: id })
       .populate("clubId", "title");
 
-
     return res.status(200).json({
       message: "User details fetched Successfully",
       user: {
-        firstName:user.firstName,
-        lastName:user.lastName,
-        userName:user.userName,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        userName: user.userName,
       },
       memberships: userMemberShips.map((m) => ({
         clubId: m.clubId._id,

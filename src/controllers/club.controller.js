@@ -45,7 +45,7 @@ async function getAllClubController(req, res) {
   try {
     const clubs = await clubModel
       .find()
-      .populate("createdBy", "username email")
+      .populate("createdBy", "userName email")
       .sort({ createdAt: -1 });
 
     if (!clubs || clubs.length === 0) {
@@ -64,6 +64,7 @@ async function getAllClubController(req, res) {
     console.error(error);
     return res.status(500).json({
       message: "Internal server error , please try again later",
+      
     });
   }
 }

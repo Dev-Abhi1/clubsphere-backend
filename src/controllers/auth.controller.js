@@ -58,65 +58,75 @@ async function registerUserController(req, res) {
 }
 
 async function loginUserController(req, res) {
-    const {userInfo,password} = req.body
-    try {
-        if(!userInfo || !password){
-            return res.status(400).json({
-                message:"Please filled the required details"
-            })
-        }
-        const isUser = await userModel.findOne({
-            $or:[
-                {
-                   userName:userInfo 
-                },
-                {
-                    email:userInfo
-                }
-            ]
-        })
-        if(!isUser){
-            return res.status(401).json({
-                message:"Unauthorized access, user not found"
-            })
-        }
-        const isPass = await bcrypt.compare(password,isUser.password)
-        if(!isPass){
-            return res.status(401).json({
-                message:"Unauthorized access, invalid password"
-            })
-        }
-        const token = await jwt.sign({
-            id:isUser._id
-        },process.env.JWT_SECRET_KEY)
-        res.cookie("token",token)
-        return res.status(200).json({
-            message:"User logged in successfully"
-        })
-    } catch (error) {
-        console.error(error)
-        res.status(501).json({
-            message:"Internal Server error , Please try again later"
-        })
+  const { userInfo, password } = req.body;
+  try {
+    if (!userInfo || !password) {
+      return res.status(400).json({
+        message: "Please filled the required details",
+      });
     }
+    const isUser = await userModel.findOne({
+      $or: [
+        {
+          userName: userInfo,
+        },
+        {
+          email: userInfo,
+        },
+      ],
+    });
+    if (!isUser) {
+      return res.status(401).json({
+        message: "Unauthorized access, user not found",
+      });
+    }
+    const isPass = await bcrypt.compare(password, isUser.password);
+    if (!isPass) {
+      return res.status(401).json({
+        message: "Unauthorized access, invalid password",
+      });
+    }
+    const token = await jwt.sign(
+      {
+        id: isUser._id,
+      },
+      process.env.JWT_SECRET_KEY
+    );
+    res.cookie("token", token);
+    return res.status(200).json({
+      message: "User logged in successfully",
+      user: {
+        id: isUser._id,
+        firstName: isUser.firstName,
+        lastName: isUser.lastName,
+        userName: isUser.userName,
+        email: isUser.email,
+      },
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(501).json({
+      message: "Internal Server error , Please try again later",
+    });
+  }
 }
 
-async function logoutUserController(req,res){
-   try {
-    res.clearCookie("token")
+async function logoutUserController(req, res) {
+  try {
+    res.clearCookie("token");
     return res.status(200).json({
-      message:"User logged out succesfully"
-    })
-   } catch (error) {
-    console.error(error)
+      message: "User logged out succesfully",
+    });
+  } catch (error) {
+    console.error(error);
     return res.status(500).json({
-       message:"Internal Server Error"
-    })
-   }
+      message: "Internal Server Error",
+    });
+  }
 }
 
 module.exports = {
   registerUserController,
   loginUserController,
-  logoutUserController
+  logoutUserController,
 };
