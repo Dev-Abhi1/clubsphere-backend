@@ -12,7 +12,20 @@ const cors = require('cors')
 const app = express()
 app.use(express.json())
 app.use(cookieparser())
-app.use(cors({ origin: ["https://darling-griffin-e584a3.netlify.app/"], credentials: true }))
+app.set("trust proxy", 1)
+
+
+const allowedOrigins = (process.env.CLIENT_URLS || "https://darling-griffin-e584a3.netlify.app").split(",").map(o => o.trim())
+app.use(
+	cors({
+		origin: function (origin, callback) {
+			if (!origin) return callback(null, true)
+			const isAllowed = allowedOrigins.some((o) => origin === o || origin === `${o}/`)
+			callback(isAllowed ? null : new Error("CORS not allowed"), isAllowed)
+		},
+		credentials: true,
+	})
+)
 app.use("/api/auth/",authRoute)
 app.use("/api/",clubRoute)
 app.use("/api/memberships/",membershipRoute)
