@@ -133,7 +133,9 @@ async function rsvpEventAttendeesController(req,res) {
         message: "Event not found",
       });
     }
-    const attendees = await rsvpModel.find({eventId,status:"going"}).populate("userId","firstName lastName email")
+    const attendees = await rsvpModel
+      .find({ eventId, status: "going" })
+      .populate("userId", "firstName lastName email userName")
      return res.status(200).json({
       message: " All attendees for this event has been fetched !!",
       attendees

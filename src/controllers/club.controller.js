@@ -100,13 +100,13 @@ async function updateClubController(req, res) {
       ? tags.split(",").map((tag) => tag.trim())
       : undefined;
 
-    //finding club
+    
     const club = await clubModel.findById(id);
     if (!club) {
       return res.status(404).json({ message: "Club not found" });
     }
 
-    //checking club ownership
+ 
     if(club.createdBy.toString() !== req.user._id.toString()){
         return res.status(403).json({
             message:"You are not allowed to update this club info"
