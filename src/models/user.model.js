@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const { default: index } = require("toastify");
 
 const userSchema = mongoose.Schema(
   {
