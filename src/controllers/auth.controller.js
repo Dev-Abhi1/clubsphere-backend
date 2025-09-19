@@ -2,6 +2,16 @@ const bcrypt = require("bcryptjs");
 const userModel = require("../models/user.model");
 const jwt = require("jsonwebtoken");
 
+// Cookie options tuned for dev vs prod
+const isProduction = process.env.NODE_ENV === "production";
+const cookieOptions = {
+  httpOnly: true,
+  secure: isProduction,
+  sameSite: isProduction ? "none" : "lax",
+  maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+  path: "/",
+};
+
 async function registerUserController(req, res) {
   try {
     const { firstName, lastName, userName, email, password } = req.body;
@@ -39,12 +49,7 @@ async function registerUserController(req, res) {
       process.env.JWT_SECRET_KEY
     );
 
-    res.cookie("token", token, {
-      httpOnly: true,
-      sameSite: "none",
-      secure: true,
-     
-    });
+    res.cookie("token", token, cookieOptions);
     return res.status(201).json({
       message: "User registered Successfully",
       user: {
@@ -98,11 +103,7 @@ async function loginUserController(req, res) {
       },
       process.env.JWT_SECRET_KEY
     );
-    res.cookie("token", token, {
-      httpOnly: true,
-      sameSite: "none",
-      secure: true,
-    });
+    res.cookie("token", token, cookieOptions);
     return res.status(200).json({
       message: "User logged in successfully",
       user: {
@@ -123,11 +124,7 @@ async function loginUserController(req, res) {
 
 async function logoutUserController(req, res) {
   try {
-    res.clearCookie("token", {
-      httpOnly: true,
-      sameSite: "none",
-      secure: true,
-    });
+    res.clearCookie("token", cookieOptions);
     return res.status(200).json({
       message: "User logged out succesfully",
     });

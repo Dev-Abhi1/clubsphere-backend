@@ -117,7 +117,13 @@ async function deleteUserController(req, res) {
     await clubModel.deleteMany({ createdBy: userId });
     await eventModel.deleteMany({ createdBy: userId });
     await user.deleteOne();
-    res.clearCookie("token");
+    const isProduction = process.env.NODE_ENV === "production";
+    res.clearCookie("token", {
+      httpOnly: true,
+      secure: isProduction,
+      sameSite: isProduction ? "none" : "lax",
+      path: "/",
+    });
     return res.status(200).json({
       message: "User account and related data deleted successfully",
     });

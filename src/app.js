@@ -15,7 +15,14 @@ app.use(cookieparser())
 app.set("trust proxy", 1)
 
 
-const allowedOrigins = (process.env.CLIENT_URLS || "https://darling-griffin-e584a3.netlify.app").split(",").map(o => o.trim())
+const defaultOrigins = [
+	"https://darling-griffin-e584a3.netlify.app",
+	"http://localhost:5173",
+	"http://127.0.0.1:5173",
+	"http://localhost:4173", // vite preview
+	"http://127.0.0.1:4173",
+]
+const allowedOrigins = (process.env.CLIENT_URLS || defaultOrigins.join(",")).split(",").map(o => o.trim())
 app.use(
 	cors({
 		origin: function (origin, callback) {
