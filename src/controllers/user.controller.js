@@ -3,7 +3,7 @@ const memberShipModel = require("../models/membership.model");
 const rsvpModel = require("../models/rsvp.model");
 const clubModel = require("../models/club.model")
 const eventModel = require("../models/event.model")
-const { message } = require("prompt-async");
+
 const bcrypt = require("bcryptjs");
 
 async function getUserController(req, res) {

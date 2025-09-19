@@ -1,4 +1,4 @@
-const { message } = require("prompt-async");
+
 const clubModel = require("../models/club.model");
 const rsvpModel = require("../models/rsvp.model");
 const eventModel = require("../models/event.model");

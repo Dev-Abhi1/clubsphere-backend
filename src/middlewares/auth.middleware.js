@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const { message } = require("prompt-async");
+
 const userModel = require("../models/user.model");
 async function authMiddleWare(req, res, next) {
   const { token } = req.cookies;
